@@ -1,12 +1,23 @@
 import "dotenv/config";
 import express from "express";
 import routes from "./routes/index.route";
+import { join, resolve } from "path";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Route management abstraction layer
 app.use("/api", routes);
+
+// Handle Sevalla setup
+if (process.env.NODE_ENV == "production") {
+  app.use(express.static(join(__dirname, "..", "..", "frontend", "dist")));
+
+  // send index.html
+  app.get("*", (req, res) => {
+    res.sendFile(join(__dirname, "..", "..", "frontend", "dist", "index.html"));
+  });
+}
 
 // App listen
 app.listen(PORT, () => {

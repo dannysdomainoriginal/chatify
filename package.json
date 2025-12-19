@@ -1,0 +1,17 @@
+{
+  "name": "chatify-app",
+  "version": "1.0.0",
+  "description": "Realtime Chat App",
+  "homepage": "https://github.com/dannysdomainoriginal/chatify#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dannysdomainoriginal/chatify.git"
+  },
+  "license": "ISC",
+  "author": "Charles Daniel",
+  "main": "backend/server.ts",
+  "scripts": {
+    "build": "npm i --prefix backend && npm i --prefix frontend && npm run build --prefix frontend && npm run build -- backend",
+    "start": "npm run start --prefix backend"
+  }
+}
