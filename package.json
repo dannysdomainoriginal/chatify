@@ -12,7 +12,16 @@
   "main": "backend/server.ts",
   "scripts": {
     "build": "npm i --prefix backend && npm i --prefix frontend && npm run build --prefix frontend && npm run build --prefix backend",
-    "start": "npm run start --prefix backend",
-    "dev": "npm i --prefix backend && npm i --prefix frontend && npm run build --prefix frontend && npm run build --prefix backend && npm run start --prefix backend"
+    "start": "npm run start --prefix backend"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0",
+    "http-errors": "^2.0.1",
+    "morgan": "^1.10.1",
+    "prettier": "^3.7.4"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/jsonwebtoken": "^9.0.10"
   }
 }
