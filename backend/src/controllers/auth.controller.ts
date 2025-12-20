@@ -4,6 +4,7 @@ import createError from "http-errors";
 import bcrypt from "bcrypt";
 import { generateToken } from "@/lib/utils";
 import { sendWelcomeMail } from "@/mail/emailHandlers";
+import cloudinary from "@/lib/cloudinary";
 
 type SignUpBody = {
   fullName: string;
@@ -13,7 +14,7 @@ type SignUpBody = {
 
 export const signup: RequestHandler = async (req, res) => {
   const { fullName, email, password }: SignUpBody = req.body || {};
-
+  console.log(req.body)
   if (!fullName || !email || !password)
     throw createError.BadRequest("All fields are required");
 
@@ -76,6 +77,9 @@ type LoginBody = {
 export const login: RequestHandler = async (req, res) => {
   const { email, password }: LoginBody = req.body;
 
+  if (!email || !password)
+    throw createError.BadRequest("Email and password are required");
+
   const user = await User.findOne({ email });
   if (!user) throw createError.BadRequest("Invalid credentials");
 
@@ -104,4 +108,28 @@ export const logout: RequestHandler = (_, res) => {
   });
 
   res.status(200).json({ message: "Logged out successfully" });
+};
+
+/* -------------------------------------------------------------------------- */
+
+type updateProfileBody = {
+  profilePic: any;
+};
+
+export const updateProfile: RequestHandler = async (req, res) => {
+  const { profilePic } : updateProfileBody = req.body;
+  if (!profilePic) throw createError.BadRequest("Profile pic is required");
+
+  const { _id: id } = req.user;
+  const { secure_url: url } = await cloudinary.uploader.upload(profilePic);
+
+  const user = await User.findByIdAndUpdate(
+    id,
+    {
+      profilePic: url,
+    },
+    { new: true }
+  );
+
+  res.status(200).json(user)
 };

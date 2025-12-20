@@ -1,10 +1,9 @@
 import "express";
+import { UserI } from "@/models/User";
 
 declare module "express-serve-static-core" {
   interface Request {
-    user?: {
-      id: string;
-    };
+    user: UserI;
     customProperty: unknown;
   }
   

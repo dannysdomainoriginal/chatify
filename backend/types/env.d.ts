@@ -9,5 +9,10 @@ declare namespace NodeJS {
     RESEND_API_KEY: string;
     EMAIL_FROM_NAME: string;
     REPLY_TO: string;
+
+    // cloudinary
+    CLOUDINARY_CLOUD_NAME: string;
+    CLOUDINARY_API_KEY: string;
+    CLOUDINARY_API_SECRET: string;
   }
 }
