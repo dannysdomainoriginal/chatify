@@ -30,7 +30,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
   res.status(status).json({
     status,
-    message: err.message,
+    message: err.message || "Something went wrong",
   });
 });
 
