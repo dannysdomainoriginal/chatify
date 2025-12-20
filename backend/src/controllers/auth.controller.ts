@@ -5,10 +5,14 @@ import bcrypt from "bcrypt";
 import { generateToken } from "@/lib/utils";
 import { sendWelcomeMail } from "@/mail/emailHandlers";
 
-type SignUpBody = Record<string, string | undefined>;
+type SignUpBody = {
+  fullName: string;
+  email: string;
+  password: string;
+};
 
 export const signup: RequestHandler = async (req, res) => {
-  const { fullName, email, password } : SignUpBody = req.body || {};
+  const { fullName, email, password }: SignUpBody = req.body || {};
 
   if (!fullName || !email || !password)
     throw createError.BadRequest("All fields are required");
@@ -45,11 +49,14 @@ export const signup: RequestHandler = async (req, res) => {
     generateToken(newUser._id.toString(), res);
 
     // * Send welcome email async, doesn't delay response
-    sendWelcomeMail(newUser.email, newUser.fullName, process.env.CLIENT_URL!)
-      .catch((err) => {
-        console.error("Failed to send welcome email: ", err)
-      })
-    
+    sendWelcomeMail(
+      newUser.email,
+      newUser.fullName,
+      process.env.CLIENT_URL!
+    ).catch((err) => {
+      console.error("Failed to send welcome email: ", err);
+    });
+
     res.status(201).json({
       _id: newUser._id,
       email: newUser.email,
@@ -57,6 +64,44 @@ export const signup: RequestHandler = async (req, res) => {
       fullName: newUser.fullName,
     });
   }
+};
 
-  // generateToken(newUser.)
+/* -------------------------------------------------------------------------- */
+
+type LoginBody = {
+  email: string;
+  password: string;
+};
+
+export const login: RequestHandler = async (req, res) => {
+  const { email, password }: LoginBody = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) throw createError.BadRequest("Invalid credentials");
+
+  const passwordCheck = await bcrypt.compare(password, user.password);
+  if (!passwordCheck) throw createError.BadRequest("Invalid credentials");
+
+  if (user) {
+    generateToken(user._id.toString(), res);
+
+    res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      profilePic: user.profilePic,
+    });
+  }
+};
+
+/* -------------------------------------------------------------------------- */
+
+export const logout: RequestHandler = (_, res) => {
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV !== "development",
+  });
+
+  res.status(200).json({ message: "Logged out successfully" });
 };
