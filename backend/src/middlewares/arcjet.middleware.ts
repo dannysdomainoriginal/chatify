@@ -11,12 +11,12 @@ export const arcjectProtection: RequestHandler = async (req, res, next) => {
     );
   });
 
-  if (isDenied()) {
-    if (reason.isRateLimit()) {
+  if (decision.isDenied()) {
+    if (decision.reason.isRateLimit()) {
       throw createError.TooManyRequests(
         "Rate limit exceeded. Please try again later"
       );
-    } else if (reason.isBot()) {
+    } else if (decision.reason.isBot()) {
       throw createError(403, "Bot access denied");
     } else {
       throw createError(403, "Access denied by security policy");
@@ -24,7 +24,7 @@ export const arcjectProtection: RequestHandler = async (req, res, next) => {
   }
 
   // check for spoofed bots
-  if (results.some(isSpoofedBot)) {
+  if (decision.results.some(isSpoofedBot)) {
     return res.status(403).json({
       error: "Spoofed bot detected",
       message: "Malicious bot activity detected"
