@@ -2,10 +2,7 @@ const fs = require("fs-extra");
 const path = require("path");
 
 // Map source folders/files to their destination paths in dist
-const folderMap = {
-  db: "dist/db",
-  "libraries/swagger.json": "dist/libraries/swagger.json"
-};
+const folderMap = {};
 
 // Files to copy directly into dist
 const filesToCopy = ["package.json", ".env"];

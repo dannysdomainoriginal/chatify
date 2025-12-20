@@ -1,10 +1,14 @@
 import "dotenv/config";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import routes from "./routes/index.route";
 import { join, resolve } from "path";
+import { connectDB } from "./lib/db";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(express.json({ limit: "1mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50kb" }));
 
 // Route management abstraction layer
 app.use("/api", routes);
@@ -14,13 +18,23 @@ if (process.env.NODE_ENV == "production") {
   app.use(express.static(join(__dirname, "..", "..", "frontend", "dist")));
 
   // send index.html
-  app.get("*", (req, res) => {
+  app.use((req, res) => {
     res.sendFile(join(__dirname, "..", "..", "frontend", "dist", "index.html"));
   });
 }
 
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const status = err.status || 500;
+
+  res.status(status).json({
+    status,
+    message: err.message
+  })
+});
+
 // App listen
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await connectDB();
   console.log(`Server listening on port ${PORT}`);
 });
 

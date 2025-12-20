@@ -7,6 +7,7 @@ declare module "express-serve-static-core" {
     };
     customProperty: unknown;
   }
+  
   interface Response {
     myLocals: {
       user?: string;
