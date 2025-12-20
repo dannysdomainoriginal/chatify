@@ -4,5 +4,10 @@ declare namespace NodeJS {
     PORT: string;
     MONGO_URI: string;
     JWT_SECRET: string;
+
+    // resend sdk
+    RESEND_API_KEY: string;
+    EMAIL_FROM_NAME: string;
+    REPLY_TO: string;
   }
 }

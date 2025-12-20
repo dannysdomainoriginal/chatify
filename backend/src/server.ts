@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import routes from "./routes/index.route";
-import { join, resolve } from "path";
+import { join } from "path";
 import { connectDB } from "./lib/db";
 
 const app = express();
@@ -28,8 +28,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
   res.status(status).json({
     status,
-    message: err.message
-  })
+    message: err.message,
+  });
 });
 
 // App listen

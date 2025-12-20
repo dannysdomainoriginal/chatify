@@ -3,11 +3,12 @@ import { RequestHandler } from "express";
 import createError from "http-errors";
 import bcrypt from "bcrypt";
 import { generateToken } from "@/lib/utils";
+import { sendWelcomeMail } from "@/mail/emailHandlers";
 
 type SignUpBody = Record<string, string | undefined>;
 
 export const signup: RequestHandler = async (req, res) => {
-  const { fullName, email, password } = (req.body as SignUpBody) || {};
+  const { fullName, email, password } : SignUpBody = req.body || {};
 
   if (!fullName || !email || !password)
     throw createError.BadRequest("All fields are required");
@@ -43,7 +44,11 @@ export const signup: RequestHandler = async (req, res) => {
   if (newUser) {
     generateToken(newUser._id.toString(), res);
 
-    // TODO: send a welcome email to user
+    await sendWelcomeMail(newUser.email, newUser.fullName, process.env.CLIENT_URL!)
+      .catch((err) => {
+        console.error("Failed to send welcome email: ", err)
+      })
+    
     res.status(201).json({
       _id: newUser._id,
       email: newUser.email,
