@@ -44,7 +44,8 @@ export const signup: RequestHandler = async (req, res) => {
   if (newUser) {
     generateToken(newUser._id.toString(), res);
 
-    await sendWelcomeMail(newUser.email, newUser.fullName, process.env.CLIENT_URL!)
+    // * Send welcome email async, doesn't delay response
+    sendWelcomeMail(newUser.email, newUser.fullName, process.env.CLIENT_URL!)
       .catch((err) => {
         console.error("Failed to send welcome email: ", err)
       })
