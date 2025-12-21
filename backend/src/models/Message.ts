@@ -24,6 +24,8 @@ const messageSchema = new mongoose.Schema<MessageI>(
     },
     text: {
       type: String,
+      trim: true,
+      maxlength: 2000,
     },
     image: {
       type: String,
@@ -32,5 +34,9 @@ const messageSchema = new mongoose.Schema<MessageI>(
   { timestamps: true }
 );
 
+// Optimize frequent queries
+messageSchema.index({ senderId: 1, receiverId: 1, createdAt: -1 });
+messageSchema.index({ receieverId: 1, senderId: 1, createdAt: -1 });
+
 const Message = mongoose.model<MessageI>("Message", messageSchema);
-export default Message
+export default Message;
