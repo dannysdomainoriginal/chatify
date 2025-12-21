@@ -5,7 +5,7 @@ import { arcjectProtection } from "@/middlewares/arcjet.middleware";
 
 const router = Router();
 
-router.use(arcjectProtection);
+// router.use(arcjectProtection);
 
 router.post("/signup", authController.signup);
 router.post("/login", authController.login);

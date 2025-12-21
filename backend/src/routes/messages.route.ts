@@ -5,13 +5,13 @@ import { Router } from "express";
 
 const router = Router();
 
-router.use(arcjectProtection);
+// router.use(arcjectProtection);
 router.use(protectRoute);
 
 router.get("/contacts", messagesController.getAllContacts);
 router.get("/chats", messagesController.getChatPartners);
 router.get("/:id", messagesController.getMessagesByUserId);
-router.post("/send:id", messagesController.sendMessage);
+router.post("/send/:id", messagesController.sendMessage);
 
 const catchCastErrors: (...args: any[]) => any = (err, req, res, next) => {
   if (err.name === "CastError") {
