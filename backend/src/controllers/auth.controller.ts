@@ -14,7 +14,7 @@ type SignUpBody = {
 
 export const signup: RequestHandler = async (req, res) => {
   const { fullName, email, password }: SignUpBody = req.body || {};
-  console.log(req.body)
+  
   if (!fullName || !email || !password)
     throw createError.BadRequest("All fields are required");
 
