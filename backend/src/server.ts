@@ -3,14 +3,22 @@ import express, { NextFunction, Request, Response } from "express";
 import routes from "./routes/index.route";
 import { join } from "path";
 import { connectDB } from "./lib/db";
-import parser from "cookie-parser"
-import morgan from "morgan"
+import parser from "cookie-parser";
+import morgan from "morgan";
+import cors from "cors";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(parser())
-app.use(morgan("dev"))
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
+
+app.use(parser());
+app.use(morgan("dev"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: false, limit: "50kb" }));
 

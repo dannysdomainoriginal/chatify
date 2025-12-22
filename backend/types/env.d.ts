@@ -1,6 +1,8 @@
 declare namespace NodeJS {
   interface ProcessEnv {
     NODE_ENV: "development" | "production" | "test";
+    CLIENT_URL: string;
+    
     PORT: string;
     MONGO_URI: string;
     JWT_SECRET: string;
