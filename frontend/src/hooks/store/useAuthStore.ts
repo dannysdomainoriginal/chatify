@@ -57,7 +57,10 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
         toast.success("Account created successfully")
       } catch (err: any) {
-        toast.error(err.response.data.message)
+        toast.error(
+          err?.response?.data?.message ||
+            "Unable to create account. Please try again."
+        );
       } finally {
         set({ isSigningUp: false });
       }
