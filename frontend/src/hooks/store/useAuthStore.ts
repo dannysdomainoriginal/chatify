@@ -1,6 +1,7 @@
 import api from "@/libraries/axios";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+import { useShallow } from "zustand/shallow";
 
 interface User {
   _id: string;
@@ -58,7 +59,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
       } catch (err: any) {
         toast.error(err.response.data.message)
       } finally {
-        set({ isSigningUp: true });
+        set({ isSigningUp: false });
       }
     },
   },
@@ -68,3 +69,11 @@ export const useAuthUser = () => useAuthStore((state) => state.authUser);
 export const useAuthLoading = () =>
   useAuthStore((state) => state.isCheckingAuth);
 export const useAuthActions = () => useAuthStore((state) => state.actions);
+
+export const useSignUp = () =>
+  useAuthStore(
+    useShallow((state) => ({
+      signUp: state.actions.signUp,
+      isSigningUp: state.isSigningUp,
+    }))
+  );
