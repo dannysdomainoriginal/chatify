@@ -98,13 +98,8 @@ const useAuthStore = create<AuthState>((set, get) => ({
     },
 
     updateProfile: async (data) => {
-      try {
-        const res = await api.put<User>("/auth/update-profile", data);
-        set({ authUser: res.data });
-        toast.success("Profile updated successfully");
-      } catch (err: any) {
-        toast.error(err?.response?.data?.message || "Error updating profile");
-      }
+      const res = await api.put<User>("/auth/update-profile", data);
+      set({ authUser: res.data });
     },
   },
 }));

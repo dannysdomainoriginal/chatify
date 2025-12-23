@@ -35,8 +35,13 @@ const ProfileHeader = () => {
       reader.onloadend = async () => {
         const base64Image = reader.result as string;
         setSelectedImg(base64Image);
-        await updateProfile({ profilePic: base64Image });
-        setUpdating(false)
+        await toast
+          .promise(updateProfile({ profilePic: base64Image }), {
+            loading: "Saving...",
+            success: "Profile updated successfully",
+            error: "Error updating your profile",
+          })
+          .finally(() => setUpdating(false));
       };
     }
   };
