@@ -37,6 +37,7 @@ if (process.env.NODE_ENV == "production") {
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const status = err.status || 500;
+  console.log(err)
 
   res.status(status).json({
     status,

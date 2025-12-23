@@ -18,9 +18,10 @@ export type FormData = {
 
 interface AuthActions {
   checkAuth: () => Promise<void>;
-  signUp: (data: FormData) => Promise<void>
-  logIn: (data: FormData) => Promise<void>
-  logOut: () => Promise<void>
+  signUp: (data: FormData) => Promise<void>;
+  logIn: (data: FormData) => Promise<void>;
+  logOut: () => Promise<void>;
+  updateProfile: (data: { profilePic: Base64URLString }) => Promise<void>;
 }
 
 interface AuthState {
@@ -61,11 +62,10 @@ const useAuthStore = create<AuthState>((set, get) => ({
         const res = await api.post<User>("/auth/signup", data);
         set({ authUser: res.data });
 
-        toast.success("Account created successfully")
+        toast.success("Account created successfully");
       } catch (err: any) {
         toast.error(
-          err?.response?.data?.message ||
-            "Error creating your account"
+          err?.response?.data?.message || "Error creating your account"
         );
       } finally {
         set({ isSigningUp: false });
@@ -81,10 +81,7 @@ const useAuthStore = create<AuthState>((set, get) => ({
 
         toast.success(`User logged in successfully`);
       } catch (err: any) {
-        toast.error(
-          err?.response?.data?.message ||
-            "Error logging you in"
-        );
+        toast.error(err?.response?.data?.message || "Error logging you in");
       } finally {
         set({ isLoggingIn: false });
       }
@@ -94,14 +91,21 @@ const useAuthStore = create<AuthState>((set, get) => ({
       try {
         const res = await api.post("/auth/logout");
         set({ authUser: null });
-        toast.success("Logged out successfully")
+        toast.success("Logged out successfully");
       } catch (err: any) {
-        toast.error(
-          err?.response?.data?.message ||
-            "Error logging you out"
-        );        
+        toast.error(err?.response?.data?.message || "Error logging you out");
       }
-    }
+    },
+
+    updateProfile: async (data) => {
+      try {
+        const res = await api.put<User>("/auth/update-profile", data);
+        set({ authUser: res.data });
+        toast.success("Profile updated successfully");
+      } catch (err: any) {
+        toast.error(err?.response?.data?.message || "Error updating profile");
+      }
+    },
   },
 }));
 
@@ -126,4 +130,4 @@ export const useLogIn = () =>
     }))
   );
 
-export const useLogOut = () => useAuthStore((state) => state.actions.logOut)
+export const useLogOut = () => useAuthStore((state) => state.actions.logOut);

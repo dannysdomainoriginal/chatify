@@ -113,7 +113,7 @@ export const logout: RequestHandler = (_, res) => {
 /* -------------------------------------------------------------------------- */
 
 type updateProfileBody = {
-  profilePic: any;
+  profilePic: Base64URLString;
 };
 
 export const updateProfile: RequestHandler = async (req, res) => {
@@ -121,7 +121,10 @@ export const updateProfile: RequestHandler = async (req, res) => {
   if (!profilePic) throw createError.BadRequest("Profile pic is required");
 
   const { _id: id } = req.user;
-  const { secure_url: url } = await cloudinary.uploader.upload(profilePic);
+  const { secure_url: url } = await cloudinary.uploader.upload(profilePic, {
+    public_id: `chatify/profile-images/${req.user._id}`,
+    folder: "chatify/profile-images"
+  });
 
   const user = await User.findByIdAndUpdate(
     id,

@@ -43,21 +43,21 @@ export const sendMessage: RequestHandler = async (req, res) => {
   const senderId = req.user._id;
 
   // Securing sendMessage routes
-  if (!text && !image) throw createError.BadRequest("Text or image is required to send a message")
-  
-  if (senderId.equals(receiverId)) throw createError.Forbidden("Cannot send messages to yourself")
-  
-  const receiverExists = await User.exists({ _id: receiverId })
-  if (!receiverExists) throw createError.NotFound("Receiver account does not exist")
+  if (!text && !image)
+    throw createError.BadRequest("Text or image is required to send a message");
+
+  if (senderId.equals(receiverId))
+    throw createError.Forbidden("Cannot send messages to yourself");
+
+  const receiverExists = await User.exists({ _id: receiverId });
+  if (!receiverExists)
+    throw createError.NotFound("Receiver account does not exist");
 
   let imageUrl;
   if (image) {
-    const uploadResponse = await cloudinary.uploader
-      .upload(image)
-      .catch((err) => {
-        console.log("Error uploading image to cloudinary:", err);
-        return { secure_url: "Cloudinary may not be currently available" };
-      });
+    const uploadResponse = await cloudinary.uploader.upload(image, {
+      folder: "chatify/messages"
+    });
 
     imageUrl = uploadResponse.secure_url;
   }
