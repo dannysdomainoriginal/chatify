@@ -5,13 +5,12 @@ import ChatPlaceholder from "@/components/ChatPlaceholder";
 import ChatsList from "@/components/ChatsList";
 import ContactsList from "@/components/ContactsList";
 import ProfileHeader from "@/components/ProfileHeader";
-import { useLogOut } from "@/hooks/store/useAuthStore";
-import { useActiveTab, useSelectedUser } from "@/hooks/store/useChatStore";
-import React from "react";
+
+import { useChatStore } from "@/hooks/store/useChatStore";
 
 const ChatPage = () => {
-  const activeTab = useActiveTab();
-  const selectedUser = useSelectedUser();
+  const activeTab = useChatStore((s) => s.activeTab);
+  const selectedUser = useChatStore((s) => s.selectedUser);
 
   return (
     <div className="text-white relative w-full max-w-6xl h-[800px]">

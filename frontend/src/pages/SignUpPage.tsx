@@ -1,5 +1,5 @@
 import React, { useRef, useState, type FormEvent } from "react";
-import { useSignUp, type FormData } from "@/hooks/store/useAuthStore";
+import { useAuthStore, type FormData } from "@/hooks/store/useAuthStore";
 import AnimatedBorder from "@/components/AnimatedBorder";
 import {
   MessageCircleIcon,
@@ -18,10 +18,13 @@ const SignUpPage = () => {
     email: "",
     password: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null)
-  const { signUp, isSigningUp } = useSignUp();
+  
+  const isSigningUp = useAuthStore((s) => s.isSigningUp)
+  const { signUp } = useAuthStore((s) => s.actions)
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();

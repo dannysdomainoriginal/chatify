@@ -6,19 +6,18 @@ import {
   PencilIcon,
   LoaderIcon,
 } from "lucide-react";
-import { useAuthActions, useAuthUser } from "@/hooks/store/useAuthStore";
-import { useChatActions, useChatSound } from "@/hooks/store/useChatStore";
+import { useAuthStore } from "@/hooks/store/useAuthStore";
+import { useChatStore } from "@/hooks/store/useChatStore";
 import toast from "react-hot-toast";
 
 const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
 
 const ProfileHeader = () => {
-  const user = useAuthUser();
   const [updating, setUpdating] = useState(false);
-  const { logOut, updateProfile } = useAuthActions();
-
-  const isSoundEnabled = useChatSound();
-  const { toggleSound } = useChatActions();
+  const { logOut, updateProfile } = useAuthStore((s) => s.actions)
+  const user = useAuthStore((s) => s.authUser)
+  const isSoundEnabled = useChatStore((s) => s.isSoundEnabled)
+  const { toggleSound } = useChatStore((s) => s.actions);
 
   const [selectedImg, setSelectedImg] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);

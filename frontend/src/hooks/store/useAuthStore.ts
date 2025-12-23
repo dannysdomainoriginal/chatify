@@ -32,7 +32,7 @@ interface AuthState {
   actions: AuthActions;
 }
 
-const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   authUser: null,
   isCheckingAuth: true,
 
@@ -103,26 +103,3 @@ const useAuthStore = create<AuthState>((set, get) => ({
     },
   },
 }));
-
-export const useAuthUser = () => useAuthStore((state) => state.authUser);
-export const useAuthLoading = () =>
-  useAuthStore((state) => state.isCheckingAuth);
-export const useAuthActions = () => useAuthStore((state) => state.actions);
-
-export const useSignUp = () =>
-  useAuthStore(
-    useShallow((state) => ({
-      signUp: state.actions.signUp,
-      isSigningUp: state.isSigningUp,
-    }))
-  );
-
-export const useLogIn = () =>
-  useAuthStore(
-    useShallow((state) => ({
-      logIn: state.actions.logIn,
-      isLoggingIn: state.isLoggingIn,
-    }))
-  );
-
-export const useLogOut = () => useAuthStore((state) => state.actions.logOut);

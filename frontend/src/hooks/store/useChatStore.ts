@@ -36,7 +36,7 @@ interface ChatActions {
 
 const localStorageKey = "ksnk:chatify:isSoundEnabled";
 
-const useChatStore = create<ChatState>((set, get) => ({
+export const useChatStore = create<ChatState>((set, get) => ({
   allContacts: [],
   chatPartners: [],
   messages: [],
@@ -86,8 +86,3 @@ const useChatStore = create<ChatState>((set, get) => ({
     },
   },
 }));
-
-export const useActiveTab = () => useChatStore((state) => state.activeTab)
-export const useSelectedUser = () => useChatStore((state) => state.selectedUser)
-export const useChatSound = () => useChatStore((state) => state.isSoundEnabled)
-export const useChatActions = () => useChatStore((state) => state.actions)
