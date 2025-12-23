@@ -3,18 +3,14 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
-import {
-  useAuthActions,
-  useAuthLoading,
-  useAuthUser,
-} from "./hooks/store/useAuthStore";
+import { useAuthStore } from "./hooks/store/useAuthStore";
 import PageLoader from "./components/PageLoader";
 import { Toaster } from "react-hot-toast";
 
 const App = () => {
-  const isCheckingAuth = useAuthLoading();
-  const user = useAuthUser();
-  const { checkAuth } = useAuthActions();
+  const isCheckingAuth = useAuthStore((s) => s.isCheckingAuth);
+  const user = useAuthStore((s) => s.authUser);
+  const { checkAuth } = useAuthStore((s) => s.actions);
 
   useEffect(() => {
     setTimeout(checkAuth, 1000);
