@@ -25,6 +25,6 @@ const ChatsListEmpty = () => {
       </button>
     </div>
   );
-}
+};
 
 export default ChatsListEmpty;

@@ -1,37 +1,36 @@
 import { useChatStore } from "@/hooks/store/useChatStore";
+import { useSendMessage } from "@/hooks/api/useSendMessage";
 import useKeyboardSound from "@/hooks/utilities/useKeyboardSound";
-import { ImageIcon, SendIcon, XIcon } from "lucide-react";
-import React, {
-  useRef,
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-} from "react";
-import toast, { LoaderIcon } from "react-hot-toast";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import toast from "react-hot-toast";
+import { ImageIcon, LoaderIcon, SendIcon, XIcon } from "lucide-react";
 
 const MessageInput = () => {
   const sound = useKeyboardSound();
+  const isSoundEnabled = useChatStore((s) => s.isSoundEnabled);
+  const selectedUser = useChatStore((s) => s.selectedUser);
+
+  const { mutateAsync: sendMessage, isPending } = useSendMessage();
+
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState("");
-  const [isSending, setIsSending] = useState(false)
-
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const isSoundEnabled = useChatStore((s) => s.isSoundEnabled);
-  const { sendMessage } = useChatStore((s) => s.actions);
 
   const handleSendMessage = async (e: FormEvent) => {
     e.preventDefault();
-    setIsSending(true)
-
+    if (!selectedUser) return;
     if (!text.trim() && !imagePreview) return;
-    if (isSoundEnabled) sound();
 
-    await sendMessage({ text: text.trim(), image: imagePreview });
+    if (isSoundEnabled) sound();
 
     setText("");
     setImagePreview("");
-    setIsSending(false)
-    if (fileInputRef.current) fileInputRef.current.value = "";
+
+    await sendMessage({
+      receiverId: selectedUser._id,
+      text: text.trim(),
+      image: imagePreview,
+    });
   };
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -105,10 +104,10 @@ const MessageInput = () => {
         </button>
         <button
           type="submit"
-          disabled={!text.trim() && !imagePreview}
+          disabled={(!text.trim() && !imagePreview) || isPending}
           className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white rounded-lg px-4 py-2 font-medium hover:from-cyan-600 hover:to-cyan-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSending ? (
+          {isPending ? (
             <LoaderIcon className="size-4 m-auto animate-spin" />
           ) : (
             <SendIcon className="w-5 h-5" />

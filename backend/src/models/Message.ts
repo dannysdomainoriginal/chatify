@@ -31,7 +31,7 @@ const messageSchema = new mongoose.Schema<MessageI>(
       type: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Optimize frequent queries

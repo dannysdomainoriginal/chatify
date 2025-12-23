@@ -1,50 +1,43 @@
 import React, { useEffect, useRef } from "react";
 import { useChatStore } from "@/hooks/store/useChatStore";
+import { useMessages } from "@/hooks/api/useMessages";
+import { useAuthUser } from "@/hooks/auth/useAuthUser";
+
 import ChatHeader from "@/partials/ChatHeader";
 import NoChatHistory from "./NoChatHistory";
-import { useAuthStore } from "@/hooks/store/useAuthStore";
 import MessagesLoadingSkeleton from "./MessagesLoadingState";
 import MessageInput from "./MessageInput";
-import { format, formatDistanceToNow, isToday, isYesterday } from "date-fns";
+
+import { format, isToday, isYesterday } from "date-fns";
 
 const formatMessageTime = (date: string | Date) => {
   const d = new Date(date);
 
-  if (isToday(d)) {
-    return format(d, "hh:mm a");
-  }
-
-  if (isYesterday(d)) {
-    return `Yesterday ${format(d, "hh:mm a")}`;
-  }
-
+  if (isToday(d)) return format(d, "hh:mm a");
+  if (isYesterday(d)) return `Yesterday ${format(d, "hh:mm a")}`;
   return format(d, "MMM d, hh:mm a");
 };
 
 const ChatContainer = () => {
   const selectedUser = useChatStore((s) => s.selectedUser);
-  const user = useAuthStore((s) => s.authUser);
-  const messages = useChatStore((s) => s.messages);
-  const isMessagesLoading = useChatStore((s) => s.isMessagesLoading);
-  const { getMessagesByUserId } = useChatStore((s) => s.actions);
+  const { data: authUser } = useAuthUser();
 
-  const messageEnd = useRef<HTMLDivElement>(null);
+  const { data: messages = [], isLoading } = useMessages(selectedUser?._id);
 
+  const messageEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll on new messages
   useEffect(() => {
-    getMessagesByUserId(selectedUser!._id);
-  }, [selectedUser]);
-
-  useEffect(() => {
-    if (messageEnd.current) {
-      messageEnd.current.scrollIntoView({ behavior: "smooth" });
-    }
+    if (!messageEndRef.current) return;
+    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   return (
     <>
       <ChatHeader />
+
       <div className="flex-1 px-6 overflow-y-auto py-8">
-        {isMessagesLoading ? (
+        {isLoading ? (
           <MessagesLoadingSkeleton />
         ) : messages.length > 0 ? (
           <div className="max-w-3xl mx-auto space-y-6">
@@ -52,12 +45,12 @@ const ChatContainer = () => {
               <div
                 key={msg._id}
                 className={`chat ${
-                  msg.senderId === user?._id ? "chat-end" : "chat-start"
+                  msg.receiverId !== authUser?._id ? "chat-end" : "chat-start"
                 }`}
               >
                 <div
                   className={`chat-bubble relative ${
-                    msg.senderId === user?._id
+                    msg.senderId === authUser?._id
                       ? "bg-cyan-600 text-white"
                       : "bg-slate-800 text-slate-200"
                   }`}
@@ -69,19 +62,23 @@ const ChatContainer = () => {
                       className="rounded-lg h-auto md:w-[25rem] object-cover"
                     />
                   )}
+
                   {msg.text && <p className="mt-2">{msg.text}</p>}
-                  <p className="text-xs text-end mt-1 opacity-75 flex items-center gap-1">
+
+                  <p className="text-xs text-end mt-1 opacity-75">
                     {formatMessageTime(msg.createdAt)}
                   </p>
                 </div>
-                <div ref={messageEnd}></div>
               </div>
             ))}
+
+            <div ref={messageEndRef} />
           </div>
         ) : (
           <NoChatHistory />
         )}
       </div>
+
       <MessageInput />
     </>
   );

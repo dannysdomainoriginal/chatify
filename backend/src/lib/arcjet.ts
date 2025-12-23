@@ -1,4 +1,4 @@
-import "dotenv/config"
+import "dotenv/config";
 import arcjet, { shield, detectBot, slidingWindow } from "@arcjet/node";
 
 export const aj = arcjet({
@@ -10,18 +10,14 @@ export const aj = arcjet({
     // Create a bot detection rule
     detectBot({
       mode: "LIVE", // Blocks requests.
-      allow: [
-        "CATEGORY:SEARCH_ENGINE",
-        "CATEGORY:MONITOR",
-        "CATEGORY:PREVIEW",
-      ],
+      allow: ["CATEGORY:SEARCH_ENGINE", "CATEGORY:MONITOR", "CATEGORY:PREVIEW"],
     }),
 
     // Create a slidingWindow rate limit.
     slidingWindow({
       mode: "LIVE",
       max: 100,
-      interval: 60 // 1 minute
-    })
+      interval: 60, // 1 minute
+    }),
   ],
 });

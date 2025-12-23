@@ -25,8 +25,7 @@ export const getMessagesByUserId: RequestHandler = async (req, res) => {
       { senderId: myId, receiverId: receipentId },
       { senderId: receipentId, receiverId: myId },
     ],
-  })
-    .sort({ updatedAt: 1 });
+  }).sort({ updatedAt: 1 });
 
   res.status(200).json(messages);
 };
@@ -57,7 +56,7 @@ export const sendMessage: RequestHandler = async (req, res) => {
   let imageUrl;
   if (image) {
     const uploadResponse = await cloudinary.uploader.upload(image, {
-      folder: "chatify/messages"
+      folder: "chatify/messages",
     });
 
     imageUrl = uploadResponse.secure_url;

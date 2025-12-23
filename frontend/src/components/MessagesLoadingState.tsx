@@ -13,5 +13,5 @@ const MessagesLoadingSkeleton = () => {
       ))}
     </div>
   );
-}
+};
 export default MessagesLoadingSkeleton;

@@ -12,6 +12,7 @@
   "main": "backend/server.ts",
   "scripts": {
     "build": "npm i --prefix backend && npm i --prefix frontend && npm run build --prefix frontend && npm run build --prefix backend",
-    "start": "npm run start --prefix backend"
+    "start": "npm run start --prefix backend",
+    "format": "prettier --write ."
   }
 }

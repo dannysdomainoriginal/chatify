@@ -1,5 +1,4 @@
 import React, { useRef, useState, type FormEvent } from "react";
-import { useAuthStore, type FormData } from "@/hooks/store/useAuthStore";
 import AnimatedBorder from "@/components/AnimatedBorder";
 import {
   MessageCircleIcon,
@@ -11,9 +10,10 @@ import {
   Eye,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useSignup, type SignupInput } from "@/hooks/auth/useSignup";
 
 const SignUpPage = () => {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<SignupInput>({
     fullName: "",
     email: "",
     password: "",
@@ -21,10 +21,9 @@ const SignUpPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null)
-  
-  const isSigningUp = useAuthStore((s) => s.isSigningUp)
-  const { signUp } = useAuthStore((s) => s.actions)
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate: signUp, isPending: isSigningUp } = useSignup();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -111,9 +110,7 @@ const SignUpPage = () => {
                               cursor: "pointer",
                             }}
                             onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => {
-                              setShowPassword(true);
-                            }}
+                            onClick={() => setShowPassword(true)}
                           />
                         ) : (
                           <Eye
@@ -124,9 +121,7 @@ const SignUpPage = () => {
                               cursor: "pointer",
                             }}
                             onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => {
-                              setShowPassword(false);
-                            }}
+                            onClick={() => setShowPassword(false)}
                           />
                         ))}
                     </div>

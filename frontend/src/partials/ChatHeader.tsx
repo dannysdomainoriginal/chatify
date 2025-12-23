@@ -8,14 +8,14 @@ const ChatHeader = () => {
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setSelectedUser(null)
-    }
-    
-    window.addEventListener("keydown", handleEscKey)
+      if (e.key === "Escape") setSelectedUser(null);
+    };
+
+    window.addEventListener("keydown", handleEscKey);
 
     // cleanup
-    return () => window.removeEventListener("keydown", handleEscKey)
-  })
+    return () => window.removeEventListener("keydown", handleEscKey);
+  });
 
   return (
     <div className="flex justify-between items-center bg-slate-800/50 border-b border-slate-700 max-h-[84px] px-6 flex-1">

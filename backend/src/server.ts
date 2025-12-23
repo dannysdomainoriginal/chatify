@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
-  })
+  }),
 );
 
 app.use(parser());
@@ -37,7 +37,7 @@ if (process.env.NODE_ENV == "production") {
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   const status = err.status || 500;
-  console.log(err)
+  console.log(err);
 
   res.status(status).json({
     status,

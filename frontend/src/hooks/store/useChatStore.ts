@@ -1,19 +1,4 @@
-import api from "@/libraries/axios";
-import toast from "react-hot-toast";
 import { create } from "zustand";
-
-interface ChatState {
-  allContacts: Contact[];
-  chatPartners: Contact[];
-  messages: Message[];
-  activeTab: "chats" | "contacts";
-  selectedUser: Contact | null;
-  isUsersLoading: boolean;
-  isMessagesLoading: boolean;
-  isSoundEnabled: boolean;
-
-  actions: ChatActions;
-}
 
 interface Contact {
   _id: string;
@@ -22,107 +7,34 @@ interface Contact {
   profilePic?: string;
 }
 
-interface Message {
-  _id: string;
-  senderId: string;
-  receiverId: string;
-  text: string;
-  image?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+interface ChatUIState {
+  activeTab: "chats" | "contacts";
+  selectedUser: Contact | null;
+  isSoundEnabled: boolean;
 
-interface ChatActions {
-  toggleSound: () => void;
-
-  setActiveTab: (tab: "chats" | "contacts") => void;
-  setSelectedUser: (user: Contact | null) => void;
-
-  getAllContacts: () => Promise<void>;
-  getMyChatPartners: () => Promise<void>;
-  getMessagesByUserId: (id: string) => Promise<void>;
-  sendMessage: (data: { text?: string; image?: string }) => Promise<void>;
+  actions: {
+    setActiveTab: (tab: "chats" | "contacts") => void;
+    setSelectedUser: (user: Contact | null) => void;
+    toggleSound: () => void;
+  };
 }
 
 const localStorageKey = "ksnk:chatify:isSoundEnabled";
 
-export const useChatStore = create<ChatState>((set, get) => ({
-  allContacts: [],
-  chatPartners: [],
-  messages: [],
+export const useChatStore = create<ChatUIState>((set, get) => ({
   activeTab: "chats",
   selectedUser: null,
-  isUsersLoading: false,
-  isMessagesLoading: false,
   isSoundEnabled:
     JSON.parse(localStorage.getItem(localStorageKey) ?? "false") === true,
 
   actions: {
-    toggleSound: () => {
-      localStorage.setItem(
-        localStorageKey,
-        JSON.stringify(!get().isSoundEnabled)
-      );
-      set({ isSoundEnabled: !get().isSoundEnabled });
-    },
-
     setActiveTab: (activeTab) => set({ activeTab }),
     setSelectedUser: (selectedUser) => set({ selectedUser }),
 
-    getAllContacts: async () => {
-      set({ isUsersLoading: true });
-
-      try {
-        const res = await api.get<Contact[]>("/messages/contacts");
-        set({ allContacts: res.data });
-      } catch (err: any) {
-        toast.error(err?.response?.data?.message || "Error getting contacts");
-      } finally {
-        set({ isUsersLoading: false });
-      }
-    },
-
-    getMyChatPartners: async () => {
-      set({ isUsersLoading: true });
-
-      try {
-        const res = await api.get<Contact[]>("/messages/chats");
-        set({ chatPartners: res.data });
-      } catch (err: any) {
-        toast.error(err?.response?.data?.message || "Error getting your chats");
-      } finally {
-        set({ isUsersLoading: false });
-      }
-    },
-
-    getMessagesByUserId: async (id) => {
-      set({ isMessagesLoading: true });
-
-      try {
-        const res = await api.get<Message[]>(`/messages/${id}`);
-        set({ messages: res.data });
-      } catch (err: any) {
-        toast.error(
-          err?.response?.data?.message || "Error getting your chat history"
-        );
-      } finally {
-        set({ isMessagesLoading: false });
-      }
-    },
-
-    sendMessage: async (messageData) => {
-      const { selectedUser, messages } = get();
-      try {
-        const res = await api.post<Message>(
-          `/messages/send/${selectedUser?._id}`,
-          messageData
-        );
-        set({ messages: messages.concat(res.data) });
-      } catch (err: any) {
-        toast.error(
-          err?.response?.data?.message || "Error sending your message"
-        );
-      }
+    toggleSound: () => {
+      const next = !get().isSoundEnabled;
+      localStorage.setItem(localStorageKey, JSON.stringify(next));
+      set({ isSoundEnabled: next });
     },
   },
 }));

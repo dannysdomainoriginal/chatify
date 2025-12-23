@@ -8,7 +8,7 @@ const client = new Resend(process.env.RESEND_API_KEY);
 export const sendWelcomeMail = async (
   email: string,
   name: string,
-  clientURL: string
+  clientURL: string,
 ) => {
   const { data, error } = await client.emails.send({
     from: process.env.EMAIL_FROM_NAME,

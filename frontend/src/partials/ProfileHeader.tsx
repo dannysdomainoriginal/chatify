@@ -6,16 +6,19 @@ import {
   PencilIcon,
   LoaderIcon,
 } from "lucide-react";
-import { useAuthStore } from "@/hooks/store/useAuthStore";
-import { useChatStore } from "@/hooks/store/useChatStore";
 import toast from "react-hot-toast";
+import { useLogout } from "@/hooks/auth/useLogout";
+import { useUpdateProfile } from "@/hooks/auth/useUpdateProfile";
+import { useAuthUser } from "@/hooks/auth/useAuthUser";
+import { useChatStore } from "@/hooks/store/useChatStore";
 
 const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
 
 const ProfileHeader = () => {
   const [updating, setUpdating] = useState(false);
-  const { logOut, updateProfile } = useAuthStore((s) => s.actions);
-  const user = useAuthStore((s) => s.authUser);
+  const { data: user } = useAuthUser();
+  const { mutate: logOut } = useLogout();
+  const { mutateAsync: updateProfile } = useUpdateProfile();
   const isSoundEnabled = useChatStore((s) => s.isSoundEnabled);
   const { toggleSound } = useChatStore((s) => s.actions);
 
@@ -27,8 +30,10 @@ const ProfileHeader = () => {
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
 
-    if (!file?.type.startsWith("image/"))
+    if (!file?.type.startsWith("image/")) {
+      setUpdating(false);
       return toast.error("Please select an image file");
+    }
 
     if (file) {
       const reader = new FileReader();
@@ -37,6 +42,7 @@ const ProfileHeader = () => {
       reader.onloadend = async () => {
         const base64Image = reader.result as string;
         setSelectedImg(base64Image);
+
         await toast
           .promise(updateProfile({ profilePic: base64Image }), {
             loading: "Saving...",
@@ -98,7 +104,7 @@ const ProfileHeader = () => {
             {/* LOGOUT BTN */}
             <button
               className="text-slate-400 hover:text-slate-200 transition-colors"
-              onClick={logOut}
+              onClick={() => logOut()}
             >
               <LogOutIcon className="size-5" />
             </button>
@@ -108,10 +114,10 @@ const ProfileHeader = () => {
               className="text-slate-400 hover:text-slate-200 transition-colors"
               onClick={() => {
                 // play mouse click on toggle
-                mouseClickSound.currentTime = 0; // reset to start
+                mouseClickSound.currentTime = 0;
                 mouseClickSound
                   .play()
-                  .catch((err) => toast.error("Click sound effect failed"));
+                  .catch(() => toast.error("Click sound effect failed"));
                 toggleSound();
               }}
             >

@@ -10,5 +10,5 @@ const AnimatedBorder = ({ children }: Props) => {
       {children}
     </div>
   );
-}
+};
 export default AnimatedBorder;

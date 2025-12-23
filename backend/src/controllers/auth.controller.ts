@@ -14,7 +14,7 @@ type SignUpBody = {
 
 export const signup: RequestHandler = async (req, res) => {
   const { fullName, email, password }: SignUpBody = req.body || {};
-  
+
   if (!fullName || !email || !password)
     throw createError.BadRequest("All fields are required");
 
@@ -53,7 +53,7 @@ export const signup: RequestHandler = async (req, res) => {
     sendWelcomeMail(
       newUser.email,
       newUser.fullName,
-      process.env.CLIENT_URL!
+      process.env.CLIENT_URL!,
     ).catch((err) => {
       console.error("Failed to send welcome email: ", err);
     });
@@ -117,13 +117,13 @@ type updateProfileBody = {
 };
 
 export const updateProfile: RequestHandler = async (req, res) => {
-  const { profilePic } : updateProfileBody = req.body;
+  const { profilePic }: updateProfileBody = req.body;
   if (!profilePic) throw createError.BadRequest("Profile pic is required");
 
   const { _id: id } = req.user;
   const { secure_url: url } = await cloudinary.uploader.upload(profilePic, {
     public_id: `chatify/profile-images/${req.user._id}`,
-    folder: "chatify/profile-images"
+    folder: "chatify/profile-images",
   });
 
   const user = await User.findByIdAndUpdate(
@@ -131,8 +131,8 @@ export const updateProfile: RequestHandler = async (req, res) => {
     {
       profilePic: url,
     },
-    { new: true }
+    { new: true },
   );
 
-  res.status(200).json(user)
+  res.status(200).json(user);
 };

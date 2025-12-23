@@ -14,7 +14,7 @@ router.put("/update-profile", protectRoute, authController.updateProfile);
 
 // auth check route
 router.get("/check", protectRoute, (req, res) =>
-  res.status(200).json(req.user)
+  res.status(200).json(req.user),
 );
 
 export default router;

@@ -1,19 +1,18 @@
 import React, { useRef, useState, type FormEvent } from "react";
-import { useAuthStore, type FormData } from "@/hooks/store/useAuthStore";
 import AnimatedBorder from "@/components/AnimatedBorder";
 import {
   MessageCircleIcon,
   LockIcon,
   MailIcon,
-  UserIcon,
   LoaderIcon,
   EyeClosedIcon,
   Eye,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLogin, type LoginInput } from "@/hooks/auth/useLogin";
 
 const LoginPage = () => {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<LoginInput>({
     email: "",
     password: "",
   });
@@ -22,8 +21,7 @@ const LoginPage = () => {
   const [passwordFocus, setPasswordFocus] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const isLoggingIn = useAuthStore((s) => s.isLoggingIn);
-  const { logIn } = useAuthStore((s) => s.actions);
+  const { mutate: logIn, isPending: isLoggingIn } = useLogin();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -35,8 +33,8 @@ const LoginPage = () => {
       <div className="relative w-full max-w-6xl md:h-[800px] h-[650px]">
         <AnimatedBorder>
           <div className="w-full flex flex-col md:flex-row">
-            ,{/* FORM ILLUSTRATION */}
-            <div className="hidden md:w-1/2 md:flex items-center justify-center p-6 bg-gradient-to-bl from-slate-800/20  to-transparent">
+            {/* FORM ILLUSTRATION */}
+            <div className="hidden md:w-1/2 md:flex items-center justify-center p-6 bg-gradient-to-bl from-slate-800/20 to-transparent">
               <div>
                 <img
                   src="/login.png"
@@ -47,7 +45,6 @@ const LoginPage = () => {
                   <h3 className="text-xl font-medium text-cyan-400">
                     Connect anytime, anywhere
                   </h3>
-
                   <div className="mt-4 flex justify-center gap-4">
                     <span className="auth-badge">Free</span>
                     <span className="auth-badge">Easy Setup</span>
@@ -56,6 +53,7 @@ const LoginPage = () => {
                 </div>
               </div>
             </div>
+
             {/* FORM COLUMN */}
             <div className="md:w-1/2 p-8 flex items-center justify-center md:border-r border-slate-600/30">
               <div className="w-full max-w-md">
@@ -114,9 +112,7 @@ const LoginPage = () => {
                               cursor: "pointer",
                             }}
                             onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => {
-                              setShowPassword(true);
-                            }}
+                            onClick={() => setShowPassword(true)}
                           />
                         ) : (
                           <Eye
@@ -127,9 +123,7 @@ const LoginPage = () => {
                               cursor: "pointer",
                             }}
                             onMouseDown={(e) => e.preventDefault()}
-                            onClick={() => {
-                              setShowPassword(false);
-                            }}
+                            onClick={() => setShowPassword(false)}
                           />
                         ))}
                     </div>

@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema<UserI>(
       default: "",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const User = mongoose.model<UserI>("User", userSchema);
-export default User
+export default User;

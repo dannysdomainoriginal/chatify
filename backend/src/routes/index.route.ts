@@ -1,10 +1,10 @@
 import { Router } from "express";
-import authRoutes from "./auth.route"
-import messagesRoutes from "./messages.route"
+import authRoutes from "./auth.route";
+import messagesRoutes from "./messages.route";
 
-const router = Router()
+const router = Router();
 
-router.use("/auth", authRoutes)
-router.use("/messages", messagesRoutes)
+router.use("/auth", authRoutes);
+router.use("/messages", messagesRoutes);
 
-export default router
+export default router;

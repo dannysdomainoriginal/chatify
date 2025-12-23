@@ -22,6 +22,6 @@ const catchCastErrors: (...args: any[]) => any = (err, req, res, next) => {
   }
 };
 
-router.use(catchCastErrors)
+router.use(catchCastErrors);
 
 export default router;

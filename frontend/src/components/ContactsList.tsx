@@ -1,19 +1,17 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useChatStore } from "@/hooks/store/useChatStore";
+import { useContacts } from "@/hooks/api/useContacts";
+
 import UsersLoadingSkeleton from "./UsersLoadingState";
 import ChatsListEmpty from "./ChatsListEmpty";
 
-const ChatsList = () => {
-  const { getAllContacts, setSelectedUser } = useChatStore((s) => s.actions);
-  const contacts = useChatStore((s) => s.allContacts);
-  const isUsersLoading = useChatStore((s) => s.isUsersLoading);
+const ContactsList = () => {
+  const { setSelectedUser } = useChatStore((s) => s.actions);
 
-  useEffect(() => {
-    getAllContacts().then(() => console.log(contacts));
-  }, [getAllContacts]);
+  const { data: contacts = [], isLoading } = useContacts();
 
-  if (isUsersLoading) return <UsersLoadingSkeleton />;
-  if (contacts.length == 0) return <ChatsListEmpty />;
+  if (isLoading) return <UsersLoadingSkeleton />;
+  if (contacts.length === 0) return <ChatsListEmpty />;
 
   return (
     <>
@@ -25,7 +23,7 @@ const ChatsList = () => {
         >
           <div className="flex items-center gap-3">
             {/* TODO: Fix online status and make it work with Socket */}
-            <div className={`avatar online`}>
+            <div className="avatar online">
               <div className="size-12 rounded-full">
                 <img
                   src={contact.profilePic || "/avatar.png"}
@@ -33,6 +31,7 @@ const ChatsList = () => {
                 />
               </div>
             </div>
+
             <div className="text-slate-200 font-medium truncate">
               {contact.fullName}
             </div>
@@ -43,4 +42,4 @@ const ChatsList = () => {
   );
 };
 
-export default ChatsList;
+export default ContactsList;
