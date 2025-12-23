@@ -14,18 +14,21 @@ const mouseClickSound = new Audio("/sounds/mouse-click.mp3");
 
 const ProfileHeader = () => {
   const [updating, setUpdating] = useState(false);
-  const { logOut, updateProfile } = useAuthStore((s) => s.actions)
-  const user = useAuthStore((s) => s.authUser)
-  const isSoundEnabled = useChatStore((s) => s.isSoundEnabled)
+  const { logOut, updateProfile } = useAuthStore((s) => s.actions);
+  const user = useAuthStore((s) => s.authUser);
+  const isSoundEnabled = useChatStore((s) => s.isSoundEnabled);
   const { toggleSound } = useChatStore((s) => s.actions);
 
   const [selectedImg, setSelectedImg] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = (e: FormEvent) => {
-    setUpdating(true)
+    setUpdating(true);
     const input = e.target as HTMLInputElement;
     const file = input.files?.[0];
+
+    if (!file?.type.startsWith("image/"))
+      return toast.error("Please select an image file");
 
     if (file) {
       const reader = new FileReader();

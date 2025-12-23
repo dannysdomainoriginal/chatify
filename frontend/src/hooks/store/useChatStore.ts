@@ -19,19 +19,29 @@ interface Contact {
   _id: string;
   fullName: string;
   email: string;
-  profilePic: string;
+  profilePic?: string;
 }
 
-interface Message {}
+interface Message {
+  _id: string;
+  senderId: string;
+  receiverId: string;
+  text: string;
+  image?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 interface ChatActions {
   toggleSound: () => void;
 
   setActiveTab: (tab: "chats" | "contacts") => void;
-  setSelectedUser: (tab: Contact) => void;
+  setSelectedUser: (user: Contact | null) => void;
 
   getAllContacts: () => Promise<void>;
   getMyChatPartners: () => Promise<void>;
+  getMessagesByUserId: (id: string) => Promise<void>;
+  sendMessage: (data: { text?: string; image?: string }) => Promise<void>;
 }
 
 const localStorageKey = "ksnk:chatify:isSoundEnabled";
@@ -82,6 +92,36 @@ export const useChatStore = create<ChatState>((set, get) => ({
         toast.error(err?.response?.data?.message || "Error getting your chats");
       } finally {
         set({ isUsersLoading: false });
+      }
+    },
+
+    getMessagesByUserId: async (id) => {
+      set({ isMessagesLoading: true });
+
+      try {
+        const res = await api.get<Message[]>(`/messages/${id}`);
+        set({ messages: res.data });
+      } catch (err: any) {
+        toast.error(
+          err?.response?.data?.message || "Error getting your chat history"
+        );
+      } finally {
+        set({ isMessagesLoading: false });
+      }
+    },
+
+    sendMessage: async (messageData) => {
+      const { selectedUser, messages } = get();
+      try {
+        const res = await api.post<Message>(
+          `/messages/send/${selectedUser?._id}`,
+          messageData
+        );
+        set({ messages: messages.concat(res.data) });
+      } catch (err: any) {
+        toast.error(
+          err?.response?.data?.message || "Error sending your message"
+        );
       }
     },
   },

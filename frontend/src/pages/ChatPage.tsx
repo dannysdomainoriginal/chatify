@@ -4,7 +4,7 @@ import ChatContainer from "@/components/ChatContainer";
 import ChatPlaceholder from "@/components/ChatPlaceholder";
 import ChatsList from "@/components/ChatsList";
 import ContactsList from "@/components/ContactsList";
-import ProfileHeader from "@/components/ProfileHeader";
+import ProfileHeader from "@/partials/ProfileHeader";
 
 import { useChatStore } from "@/hooks/store/useChatStore";
 

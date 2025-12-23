@@ -25,7 +25,8 @@ export const getMessagesByUserId: RequestHandler = async (req, res) => {
       { senderId: myId, receiverId: receipentId },
       { senderId: receipentId, receiverId: myId },
     ],
-  });
+  })
+    .sort({ updatedAt: 1 });
 
   res.status(200).json(messages);
 };
