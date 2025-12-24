@@ -34,7 +34,7 @@ const LoginPage = () => {
         <AnimatedBorder>
           <div className="w-full flex flex-col md:flex-row">
             {/* FORM ILLUSTRATION */}
-            <div className="hidden md:w-1/2 md:flex items-center justify-center p-6 bg-gradient-to-bl from-slate-800/20 to-transparent">
+            <div className="hidden md:w-1/2 md:flex items-center justify-center p-6 bg-gradient-to-bl from-slate-800/20 to-transparent md:border-r border-slate-600/30">
               <div>
                 <img
                   src="/login.png"
@@ -55,7 +55,7 @@ const LoginPage = () => {
             </div>
 
             {/* FORM COLUMN */}
-            <div className="md:w-1/2 p-8 flex items-center justify-center md:border-r border-slate-600/30">
+            <div className="md:w-1/2 p-8 flex items-center justify-center">
               <div className="w-full max-w-md">
                 {/* Heading Text */}
                 <div className="text-center mb-8">

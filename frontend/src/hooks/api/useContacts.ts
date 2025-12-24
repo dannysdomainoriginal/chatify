@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "@/libraries/axios";
+import { useAuthUser } from "../auth/useAuthUser";
 
 export interface Contact {
   _id: string;
@@ -14,14 +15,11 @@ const fetchContacts = async (): Promise<Contact[]> => {
 };
 
 export const useContacts = () => {
-  return useQuery({
-    queryKey: ["contacts"],
-    queryFn: fetchContacts,
+  const { data: authUser } = useAuthUser()
 
-    // 👇 important bits
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // cache cleanup
-    refetchOnWindowFocus: false,
-    retry: 1,
+  return useQuery({
+    queryKey: ["auth", authUser?._id, "contacts"],
+    queryFn: fetchContacts,
+    enabled: !!authUser?._id
   });
 };

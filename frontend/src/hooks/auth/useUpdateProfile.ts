@@ -1,8 +1,8 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/libraries/axios";
 import toast from "react-hot-toast";
-import queryClient from "@/libraries/react-query";
 import type { AuthUser } from "./useAuthUser";
+import queryClient from "@/libraries/tanstack";
 
 export interface UpdateProfileInput {
   fullName?: string;

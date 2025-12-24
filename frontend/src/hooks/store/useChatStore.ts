@@ -16,6 +16,7 @@ interface ChatUIState {
     setActiveTab: (tab: "chats" | "contacts") => void;
     setSelectedUser: (user: Contact | null) => void;
     toggleSound: () => void;
+    resetChatUI: () => void;
   };
 }
 
@@ -35,6 +36,14 @@ export const useChatStore = create<ChatUIState>((set, get) => ({
       const next = !get().isSoundEnabled;
       localStorage.setItem(localStorageKey, JSON.stringify(next));
       set({ isSoundEnabled: next });
+    },
+
+    resetChatUI: () => {
+      set({
+        selectedUser: null,
+        activeTab: "chats",
+        isSoundEnabled: true,
+      });
     },
   },
 }));

@@ -1,5 +1,6 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import api from "@/libraries/axios";
+import { useAuthUser } from "../auth/useAuthUser";
 
 export interface Message {
   _id: string;
@@ -16,19 +17,12 @@ const fetchMessages = async (userId: string): Promise<Message[]> => {
   return res.data;
 };
 
-export const useMessages = (userId?: string) => {
+export const useMessages = (partnerId: string) => {
+  const { data: authUser } = useAuthUser()
+
   return useQuery({
-    queryKey: ["messages", userId],
-    queryFn: ({ queryKey }) => {
-      const [_, id] = queryKey;
-      return fetchMessages(id!);
-    },
-
-    enabled: !!userId,
-    placeholderData: keepPreviousData,
-
-    staleTime: 30 * 1000,
-    refetchOnWindowFocus: false,
-    retry: 1,
+    queryKey: ["auth", authUser?._id, "messages", partnerId],
+    queryFn: () => fetchMessages(partnerId),
+    enabled: !!authUser?._id && !!partnerId
   });
 };

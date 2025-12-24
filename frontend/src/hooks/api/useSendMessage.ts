@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import api from "@/libraries/axios";
+import { useAuthUser } from "@/hooks/auth/useAuthUser";
 import type { Message } from "./useMessages";
-import queryClient from "@/libraries/react-query";
+import queryClient from "@/libraries/tanstack";
 
 interface SendMessageInput {
   receiverId: string;
@@ -10,8 +11,14 @@ interface SendMessageInput {
 }
 
 export const useSendMessage = () => {
+  const { data: authUser } = useAuthUser();
+
   return useMutation({
     mutationFn: async (data: SendMessageInput) => {
+      if (!authUser?._id) {
+        throw new Error("User not authenticated");
+      }
+      
       const res = await api.post<Message>(`/messages/send/${data.receiverId}`, {
         text: data.text,
         image: data.image,
@@ -19,20 +26,21 @@ export const useSendMessage = () => {
       return res.data;
     },
 
-    // 🔥 OPTIMISTIC UPDATE
     onMutate: async (variables) => {
+      if (!authUser?._id) return;
+
       const { receiverId, text, image } = variables;
 
-      await queryClient.cancelQueries({
-        queryKey: ["messages", receiverId],
-      });
+      const queryKey = ["auth", authUser._id, "messages", receiverId];
+
+      await queryClient.cancelQueries({ queryKey });
 
       const previousMessages =
-        queryClient.getQueryData<Message[]>(["messages", receiverId]) || [];
+        queryClient.getQueryData<Message[]>(queryKey) || [];
 
       const optimisticMessage: Message = {
         _id: `optimistic-${Date.now()}`,
-        senderId: "me", // UI only; real value comes from backend
+        senderId: authUser._id, // realistic temporary ID
         receiverId,
         text: text ?? "",
         image,
@@ -40,39 +48,33 @@ export const useSendMessage = () => {
         updatedAt: new Date().toISOString(),
       };
 
-      queryClient.setQueryData<Message[]>(
-        ["messages", receiverId],
-        [...previousMessages, optimisticMessage],
-      );
+      queryClient.setQueryData<Message[]>(queryKey, [
+        ...previousMessages,
+        optimisticMessage,
+      ]);
 
       return { previousMessages };
     },
 
-    // ❌ ROLLBACK ON ERROR
     onError: (_err, variables, context) => {
-      if (!context?.previousMessages) return;
-
-      queryClient.setQueryData(
-        ["messages", variables.receiverId],
-        context.previousMessages,
-      );
+      if (!authUser?._id || !context?.previousMessages) return;
+      const queryKey = ["auth", authUser._id, "messages", variables.receiverId];
+      queryClient.setQueryData(queryKey, context.previousMessages);
     },
 
-    // ✅ REPLACE OPTIMISTIC MESSAGE
     onSuccess: (savedMessage, variables) => {
-      queryClient.setQueryData<Message[]>(
-        ["messages", variables.receiverId],
-        (old = []) =>
-          old.map((msg) =>
-            msg._id.startsWith("optimistic") ? savedMessage : msg,
-          ),
-      );
-    },
+      if (!authUser?._id) return;
 
-    // 🔄 UPDATE CHAT LIST
-    onSettled: () => {
+      const queryKey = ["auth", authUser._id, "messages", variables.receiverId];
+      queryClient.setQueryData<Message[]>(queryKey, (old = []) =>
+        old.map((msg) =>
+          msg._id.startsWith("optimistic") ? savedMessage : msg
+        )
+      );
+
+      // Optionally, invalidate chat-partners for ordering, etc.
       queryClient.invalidateQueries({
-        queryKey: ["chat-partners"],
+        queryKey: ["auth", authUser._id, "chat-partners"],
       });
     },
   });

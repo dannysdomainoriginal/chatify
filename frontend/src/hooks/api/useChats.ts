@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "@/libraries/axios";
+import { useAuthUser } from "../auth/useAuthUser";
 
 export interface ChatPartner {
   _id: string;
@@ -14,13 +15,11 @@ const fetchChatPartners = async (): Promise<ChatPartner[]> => {
 };
 
 export const useChatPartners = () => {
-  return useQuery({
-    queryKey: ["chat-partners"],
-    queryFn: fetchChatPartners,
+  const { data: authUser } = useAuthUser()
 
-    staleTime: 60 * 1000, // 1 minute (shorter than contacts)
-    gcTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    retry: 1,
+  return useQuery({
+    queryKey: ["auth", authUser?._id, "chat-partners"],
+    queryFn: fetchChatPartners,
+    enabled: !!authUser?._id
   });
 };
