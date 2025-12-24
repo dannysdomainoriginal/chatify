@@ -18,11 +18,11 @@ const fetchMessages = async (userId: string): Promise<Message[]> => {
 };
 
 export const useMessages = (partnerId: string) => {
-  const { data: authUser } = useAuthUser()
+  const { data: authUser } = useAuthUser();
 
   return useQuery({
     queryKey: ["auth", authUser?._id, "messages", partnerId],
     queryFn: () => fetchMessages(partnerId),
-    enabled: !!authUser?._id && !!partnerId
+    enabled: !!authUser?._id && !!partnerId,
   });
 };

@@ -24,7 +24,7 @@ export const useSignup = () => {
 
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Error creating your account"
+        error?.response?.data?.message || "Error creating your account",
       );
     },
   });

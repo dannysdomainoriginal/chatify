@@ -34,13 +34,13 @@ api.interceptors.response.use(
           loading: "Retrying...",
           success: "Success ✅",
           error: "Check your internet connection",
-        }
+        },
       );
     }
 
     // Pass down error safely
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;

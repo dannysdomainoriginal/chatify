@@ -15,11 +15,11 @@ const fetchChatPartners = async (): Promise<ChatPartner[]> => {
 };
 
 export const useChatPartners = () => {
-  const { data: authUser } = useAuthUser()
+  const { data: authUser } = useAuthUser();
 
   return useQuery({
     queryKey: ["auth", authUser?._id, "chat-partners"],
     queryFn: fetchChatPartners,
-    enabled: !!authUser?._id
+    enabled: !!authUser?._id,
   });
 };

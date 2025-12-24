@@ -15,11 +15,11 @@ const fetchContacts = async (): Promise<Contact[]> => {
 };
 
 export const useContacts = () => {
-  const { data: authUser } = useAuthUser()
+  const { data: authUser } = useAuthUser();
 
   return useQuery({
     queryKey: ["auth", authUser?._id, "contacts"],
     queryFn: fetchContacts,
-    enabled: !!authUser?._id
+    enabled: !!authUser?._id,
   });
 };

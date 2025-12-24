@@ -6,8 +6,8 @@ import { useChatStore } from "../store/useChatStore";
 import queryClient from "@/libraries/tanstack";
 
 export const useLogout = () => {
-  const { resetChatUI } = useChatStore((s) => s.actions)
-  
+  const { resetChatUI } = useChatStore((s) => s.actions);
+
   return useMutation({
     mutationFn: async (): Promise<void> => {
       await api.post("/auth/logout");

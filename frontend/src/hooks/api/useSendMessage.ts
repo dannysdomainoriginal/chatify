@@ -18,7 +18,7 @@ export const useSendMessage = () => {
       if (!authUser?._id) {
         throw new Error("User not authenticated");
       }
-      
+
       const res = await api.post<Message>(`/messages/send/${data.receiverId}`, {
         text: data.text,
         image: data.image,
@@ -68,8 +68,8 @@ export const useSendMessage = () => {
       const queryKey = ["auth", authUser._id, "messages", variables.receiverId];
       queryClient.setQueryData<Message[]>(queryKey, (old = []) =>
         old.map((msg) =>
-          msg._id.startsWith("optimistic") ? savedMessage : msg
-        )
+          msg._id.startsWith("optimistic") ? savedMessage : msg,
+        ),
       );
 
       // Optionally, invalidate chat-partners for ordering, etc.
