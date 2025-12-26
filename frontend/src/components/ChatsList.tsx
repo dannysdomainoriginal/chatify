@@ -4,9 +4,11 @@ import { useChatPartners } from "@/hooks/api/useChats";
 
 import UsersLoadingSkeleton from "./UsersLoadingState";
 import ChatsListEmpty from "./ChatsListEmpty";
+import { useSocketStore } from "@/hooks/store/useSocketStore";
 
 const ChatsList = () => {
   const { setSelectedUser } = useChatStore((s) => s.actions);
+  const onlineUsers = useSocketStore((s) => s.onlineUsers);
 
   const { data: chats = [], isLoading } = useChatPartners();
 
@@ -22,8 +24,7 @@ const ChatsList = () => {
           onClick={() => setSelectedUser(chat)}
         >
           <div className="flex items-center gap-3">
-            {/* TODO: Fix online status and make it work with Socket */}
-            <div className="avatar online">
+            <div className={`avatar ${onlineUsers.includes(chat._id) ? "online" : "offline" }`}>
               <div className="size-12 rounded-full">
                 <img
                   src={chat.profilePic || "/avatar.png"}

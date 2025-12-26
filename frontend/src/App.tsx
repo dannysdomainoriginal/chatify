@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ChatPage from "./pages/ChatPage";
 import LoginPage from "./pages/LoginPage";
@@ -6,9 +6,15 @@ import SignUpPage from "./pages/SignUpPage";
 import PageLoader from "./components/PageLoader";
 import { Toaster } from "react-hot-toast";
 import { useAuthUser } from "./hooks/auth/useAuthUser";
+import { useSocketStore } from "./hooks/store/useSocketStore";
 
 const App = () => {
   const { data: user, isLoading } = useAuthUser();
+  const { connectSocket, disconnectSocket } = useSocketStore((s) => s.actions);
+
+  useEffect(() => {
+    user ? connectSocket(user) : disconnectSocket();
+  }, [user, connectSocket, disconnectSocket]);
 
   if (isLoading) return <PageLoader />;
 

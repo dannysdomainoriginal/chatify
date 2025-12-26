@@ -1,12 +1,14 @@
 import React from "react";
 import { useChatStore } from "@/hooks/store/useChatStore";
 import { useContacts } from "@/hooks/api/useContacts";
+import { useSocketStore } from "@/hooks/store/useSocketStore";
 
 import UsersLoadingSkeleton from "./UsersLoadingState";
 import ChatsListEmpty from "./ChatsListEmpty";
 
 const ContactsList = () => {
   const { setSelectedUser } = useChatStore((s) => s.actions);
+  const onlineUsers = useSocketStore((s) => s.onlineUsers);
 
   const { data: contacts = [], isLoading } = useContacts();
 
@@ -22,8 +24,11 @@ const ContactsList = () => {
           onClick={() => setSelectedUser(contact)}
         >
           <div className="flex items-center gap-3">
-            {/* TODO: Fix online status and make it work with Socket */}
-            <div className="avatar online">
+            <div
+              className={`avatar ${
+                onlineUsers.includes(contact._id) ? "online" : "offline"
+              }`}
+            >
               <div className="size-12 rounded-full">
                 <img
                   src={contact.profilePic || "/avatar.png"}

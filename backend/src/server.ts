@@ -6,8 +6,8 @@ import { connectDB } from "./lib/db";
 import parser from "cookie-parser";
 import morgan from "morgan";
 import cors from "cors";
+import { app, server } from "./lib/socket-io";
 
-const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(
@@ -46,7 +46,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 // App listen
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   await connectDB();
   console.log(`Server listening on port ${PORT}`);
 });

@@ -57,6 +57,7 @@ export const sendMessage: RequestHandler = async (req, res) => {
   if (image) {
     const uploadResponse = await cloudinary.uploader.upload(image, {
       folder: "chatify/messages",
+      async: true,
     });
 
     imageUrl = uploadResponse.secure_url;

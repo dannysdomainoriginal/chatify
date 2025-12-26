@@ -18,9 +18,7 @@ export const useLogout = () => {
       queryClient.setQueryData<AuthUser | null>(["auth-user"], null);
 
       // 2️⃣ Remove ALL user-scoped server state
-      queryClient.removeQueries({
-        queryKey: ["auth"],
-      });
+      queryClient.removeQueries({ queryKey: ["auth"] });
 
       // 3️⃣ Reset ALL auth-dependent UI state
       resetChatUI();
