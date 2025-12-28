@@ -10,8 +10,8 @@ const ChatHeader = () => {
 
   // Check if user is online
   const isOnline = useMemo(() => {
-    return onlineUsers.includes(selectedUser!._id)
-  }, [onlineUsers])
+    return selectedUser ? onlineUsers.includes(selectedUser._id) : false;
+  }, [onlineUsers, selectedUser]);
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {

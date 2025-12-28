@@ -1,4 +1,5 @@
 import cloudinary from "@/lib/cloudinary";
+import { getReceiverSocketId, io } from "@/lib/socket-io";
 import Message from "@/models/Message";
 import User from "@/models/User";
 import { RequestHandler } from "express";
@@ -71,6 +72,15 @@ export const sendMessage: RequestHandler = async (req, res) => {
   });
 
   // TODO: send message in real-time if user is online - socket.io
+  const receiverSocketId = getReceiverSocketId(receiverId)
+
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit("newMessage", {
+      id: req.user._id,
+      fullName: req.user.fullName,
+      newMessage
+    })
+  }
 
   res.status(201).json(newMessage);
 };

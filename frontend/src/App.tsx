@@ -7,14 +7,22 @@ import PageLoader from "./components/PageLoader";
 import { Toaster } from "react-hot-toast";
 import { useAuthUser } from "./hooks/auth/useAuthUser";
 import { useSocketStore } from "./hooks/store/useSocketStore";
+import { useChatStore } from "./hooks/store/useChatStore";
 
 const App = () => {
   const { data: user, isLoading } = useAuthUser();
   const { connectSocket, disconnectSocket } = useSocketStore((s) => s.actions);
+  const { subscribeToNewMessages } = useSocketStore((s) => s.actions);
+  const isSoundEnabled = useChatStore((s) => s.isSoundEnabled)
 
   useEffect(() => {
-    user ? connectSocket(user) : disconnectSocket();
-  }, [user, connectSocket, disconnectSocket]);
+    if (user) {
+      connectSocket(user)
+      subscribeToNewMessages(user, isSoundEnabled)
+    } else {
+      disconnectSocket();
+    }
+  }, [user, connectSocket, disconnectSocket, isSoundEnabled]);
 
   if (isLoading) return <PageLoader />;
 

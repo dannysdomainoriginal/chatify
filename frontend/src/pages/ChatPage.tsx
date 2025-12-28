@@ -7,10 +7,25 @@ import ContactsList from "@/components/ContactsList";
 import ProfileHeader from "@/partials/ProfileHeader";
 
 import { useChatStore } from "@/hooks/store/useChatStore";
+import { useSocketStore } from "@/hooks/store/useSocketStore";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 const ChatPage = () => {
   const activeTab = useChatStore((s) => s.activeTab);
   const selectedUser = useChatStore((s) => s.selectedUser);
+
+  const newMessage = useSocketStore((s) => s.notifyMessage);
+
+  useEffect(() => {
+    if (newMessage) {
+      const { id, name } = newMessage
+      
+      if (!selectedUser || id !== selectedUser?._id) {
+        toast.success(`${name} sent a new message`);
+      }
+    }
+  }, [newMessage])
 
   return (
     <div className="text-white relative w-full max-w-6xl h-[800px]">

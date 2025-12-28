@@ -17,12 +17,12 @@ const fetchMessages = async (userId: string): Promise<Message[]> => {
   return res.data;
 };
 
-export const useMessages = (partnerId: string) => {
+export const useMessages = (partnerId: string | undefined) => {
   const { data: authUser } = useAuthUser();
 
   return useQuery({
     queryKey: ["auth", authUser?._id, "messages", partnerId],
-    queryFn: () => fetchMessages(partnerId),
+    queryFn: () => fetchMessages(partnerId!),
     enabled: !!authUser?._id && !!partnerId,
   });
 };

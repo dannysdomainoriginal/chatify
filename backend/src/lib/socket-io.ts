@@ -47,4 +47,9 @@ io.on("connection", (socket) => {
   });
 });
 
+// check if user is online
+export const getReceiverSocketId = (userId: string) => {
+  return userSocketMap.get(userId) as string | null
+}
+
 export { io, app, server }
