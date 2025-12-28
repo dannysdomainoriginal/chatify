@@ -19,13 +19,13 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (newMessage) {
-      const { id, name } = newMessage
-      
+      const { id, name } = newMessage;
+
       if (!selectedUser || id !== selectedUser?._id) {
         toast.success(`${name} sent a new message`);
       }
     }
-  }, [newMessage])
+  }, [newMessage]);
 
   return (
     <div className="text-white relative w-full max-w-6xl h-[800px]">

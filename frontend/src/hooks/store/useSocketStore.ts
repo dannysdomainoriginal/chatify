@@ -76,7 +76,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
         const queryKey = ["auth", user._id, "messages", partner.id];
 
         // ✅ Push message directly into cache
-        const old = queryClient.getQueryData<Message[]>(queryKey) || []
+        const old = queryClient.getQueryData<Message[]>(queryKey) || [];
         queryClient.setQueryData<Message[]>(queryKey, () => {
           if (old.some((m) => m._id === partner.newMessage._id)) {
             return old;
@@ -85,7 +85,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
           return [...old, partner.newMessage];
         });
 
-        await queryClient.invalidateQueries({ queryKey })
+        await queryClient.invalidateQueries({ queryKey });
 
         if (soundEnabled) {
           notificationSound.currentTime = 0;

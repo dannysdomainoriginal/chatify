@@ -1,7 +1,7 @@
-import "dotenv/config"
+import "dotenv/config";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import express from "express"
+import express from "express";
 import { SocketData } from "types/socket";
 import socketAuthMiddleware from "@/middlewares/socket-auth.middleware";
 
@@ -9,23 +9,23 @@ import socketAuthMiddleware from "@/middlewares/socket-auth.middleware";
 // todo OnlineUsers
 // todo Realtime Messages
 
-const app = express()
-const server = createServer(app)
+const app = express();
+const server = createServer(app);
 
 const io = new Server<any, any, any, SocketData>(server, {
   cors: {
     origin: [process.env.CLIENT_URL],
-    credentials: true
+    credentials: true,
   },
 });
 
 io.on("connection", (socket) => {
-  socket.emit("hello", "world")
-  io.to("room-101").emit("foo", socket.data.user)
-})
+  socket.emit("hello", "world");
+  io.to("room-101").emit("foo", socket.data.user);
+});
 
 // apply authentication middleware to all socket connections
-io.use(socketAuthMiddleware)
+io.use(socketAuthMiddleware);
 
 // Store online users: Map<userId, socketId>
 const userSocketMap = new Map();
@@ -49,7 +49,7 @@ io.on("connection", (socket) => {
 
 // check if user is online
 export const getReceiverSocketId = (userId: string) => {
-  return userSocketMap.get(userId) as string | null
-}
+  return userSocketMap.get(userId) as string | null;
+};
 
-export { io, app, server }
+export { io, app, server };

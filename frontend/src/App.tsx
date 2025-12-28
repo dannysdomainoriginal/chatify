@@ -13,12 +13,12 @@ const App = () => {
   const { data: user, isLoading } = useAuthUser();
   const { connectSocket, disconnectSocket } = useSocketStore((s) => s.actions);
   const { subscribeToNewMessages } = useSocketStore((s) => s.actions);
-  const isSoundEnabled = useChatStore((s) => s.isSoundEnabled)
+  const isSoundEnabled = useChatStore((s) => s.isSoundEnabled);
 
   useEffect(() => {
     if (user) {
-      connectSocket(user)
-      subscribeToNewMessages(user, isSoundEnabled)
+      connectSocket(user);
+      subscribeToNewMessages(user, isSoundEnabled);
     } else {
       disconnectSocket();
     }

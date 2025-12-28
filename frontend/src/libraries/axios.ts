@@ -28,14 +28,13 @@ api.interceptors.response.use(
     }
 
     if (error.code === "ECONNABORTED") {
-      toast.promise(
-        new Promise((resolve, reject) => setTimeout(reject, 3000)),
-        {
+      toast
+        .promise(new Promise((resolve, reject) => setTimeout(reject, 3000)), {
           loading: "Retrying...",
           success: "Success ✅",
           error: "Check your internet connection",
-        },
-      ).catch(() => console.log("Error saved"))
+        })
+        .catch(() => console.log("Error saved"));
     }
 
     // Pass down error safely

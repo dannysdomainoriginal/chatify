@@ -7,7 +7,7 @@ import { SocketData } from "types/socket";
 
 type SocketIOMiddleware = (
   socket: Socket<any, any, any, SocketData>,
-  next: (err?: ExtendedError) => void
+  next: (err?: ExtendedError) => void,
 ) => void;
 
 const socketAuthMiddleware: SocketIOMiddleware = async (socket, next) => {
@@ -42,7 +42,7 @@ const socketAuthMiddleware: SocketIOMiddleware = async (socket, next) => {
     socket.data.userId = user._id.toString();
 
     console.log(
-      `Socket authenticated for user: ${user.fullName} (${user._id})`
+      `Socket authenticated for user: ${user.fullName} (${user._id})`,
     );
 
     next();

@@ -72,14 +72,14 @@ export const sendMessage: RequestHandler = async (req, res) => {
   });
 
   // TODO: send message in real-time if user is online - socket.io
-  const receiverSocketId = getReceiverSocketId(receiverId)
+  const receiverSocketId = getReceiverSocketId(receiverId);
 
   if (receiverSocketId) {
     io.to(receiverSocketId).emit("newMessage", {
       id: req.user._id,
       fullName: req.user.fullName,
-      newMessage
-    })
+      newMessage,
+    });
   }
 
   res.status(201).json(newMessage);
